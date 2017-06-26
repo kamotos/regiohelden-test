@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Delete confirmation{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-error">
+                    Are you sure you want to delete the user <strong>{{ object }}</strong>?
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="btn-group" role="group">
+                  <a href="javascript:history.back()">
+                      <button type="button" class="btn btn-primary">Cancel</button>
+                  </a>
+
+                  <form method="post">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger">Delete</button>
+                  </form>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

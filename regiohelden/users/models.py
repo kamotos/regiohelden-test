@@ -20,3 +20,12 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse('users:detail', kwargs={'username': self.username})
+
+    def can_modify(self, user):
+        """
+
+        :type user: regiohelden.users.models.User
+        :param user: User to be modified
+        :rtype: bool
+        """
+        return user.created_by == self

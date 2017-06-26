@@ -1,8 +1,9 @@
-from django.core.urlresolvers import reverse
-from django.views.generic import DetailView, ListView, RedirectView, UpdateView
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.views.generic import DetailView, ListView, RedirectView, UpdateView, DeleteView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from regiohelden.users.permissions import UserCreatedByAdminMixin
 from .models import User
 
 
@@ -22,11 +23,13 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
-
-    fields = ['name', ]
+    fields = ['first_name', 'last_name', 'iban']
 
     # we already imported User in the view code above, remember?
     model = User
+
+
+class OwnUserUpdateView(UserUpdateView):
 
     # send the user back to their own page after a successful update
     def get_success_url(self):
@@ -40,6 +43,10 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
 class UserListView(LoginRequiredMixin, ListView):
     model = User
-    # These next two lines tell the view to index lookups by username
+
+
+class UserDeleteView(LoginRequiredMixin, UserCreatedByAdminMixin, DeleteView):
+    model = User
     slug_field = 'username'
     slug_url_kwarg = 'username'
+    success_url = reverse_lazy('users:list')

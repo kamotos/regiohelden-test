@@ -20,7 +20,12 @@ urlpatterns = [
     ),
     url(
         regex=r'^~update/$',
-        view=views.UserUpdateView.as_view(),
+        view=views.OwnUserUpdateView.as_view(),
         name='update'
+    ),
+    url(
+        regex=r'^(?P<username>[\w.@+-]+)/delete$',
+        view=views.UserDeleteView.as_view(),
+        name='delete'
     ),
 ]
