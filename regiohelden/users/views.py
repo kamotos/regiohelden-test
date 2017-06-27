@@ -1,5 +1,6 @@
+from braces.views import FormValidMessageMixin
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.views.generic import DetailView, ListView, RedirectView, UpdateView, DeleteView
+from django.views.generic import DetailView, ListView, RedirectView, UpdateView, DeleteView, CreateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -7,11 +8,19 @@ from regiohelden.users.permissions import UserCreatedByAdminMixin
 from .models import User
 
 
+class UserCreateView(LoginRequiredMixin, FormValidMessageMixin, CreateView):
+    model = User
+    fields = ('username', 'first_name', 'last_name', 'iban')
+    form_valid_message = "User successfully created"
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.created_by = self.request.user
+        return super().form_valid(form)
+
+
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
-    # These next two lines tell the view to index lookups by username
-    slug_field = 'username'
-    slug_url_kwarg = 'username'
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -19,26 +28,26 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
     def get_redirect_url(self):
         return reverse('users:detail',
-                       kwargs={'username': self.request.user.username})
+                       kwargs={'pk': self.request.user.pk})
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
+class UserUpdateView(LoginRequiredMixin,
+                     UserCreatedByAdminMixin,
+                     FormValidMessageMixin,
+                     UpdateView):
     fields = ['first_name', 'last_name', 'iban']
-
-    # we already imported User in the view code above, remember?
     model = User
+    form_valid_message = "User successfully updated"
 
 
 class OwnUserUpdateView(UserUpdateView):
 
-    # send the user back to their own page after a successful update
     def get_success_url(self):
-        return reverse('users:detail',
-                       kwargs={'username': self.request.user.username})
+        return self.request.user.get_absolute_url()
 
     def get_object(self):
         # Only get the User record for the user making the request
-        return User.objects.get(username=self.request.user.username)
+        return self.request.user
 
 
 class UserListView(LoginRequiredMixin, ListView):
@@ -47,6 +56,4 @@ class UserListView(LoginRequiredMixin, ListView):
 
 class UserDeleteView(LoginRequiredMixin, UserCreatedByAdminMixin, DeleteView):
     model = User
-    slug_field = 'username'
-    slug_url_kwarg = 'username'
     success_url = reverse_lazy('users:list')

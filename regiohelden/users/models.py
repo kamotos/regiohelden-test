@@ -16,10 +16,10 @@ class User(AbstractUser):
     iban = IBANField(null=True)
 
     def __str__(self):
-        return self.username
+        return self.get_full_name()
 
     def get_absolute_url(self):
-        return reverse('users:detail', kwargs={'username': self.username})
+        return reverse('users:detail', kwargs={'pk': self.pk})
 
     def can_modify(self, user):
         """
@@ -28,4 +28,4 @@ class User(AbstractUser):
         :param user: User to be modified
         :rtype: bool
         """
-        return user.created_by == self
+        return user.created_by == self or user == self

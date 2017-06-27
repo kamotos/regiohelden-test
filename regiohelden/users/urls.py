@@ -9,13 +9,18 @@ urlpatterns = [
         name='list'
     ),
     url(
+        regex=r'^create/$',
+        view=views.UserCreateView.as_view(),
+        name='create'
+    ),
+    url(
         regex=r'^~redirect/$',
         view=views.UserRedirectView.as_view(),
         name='redirect'
     ),
     url(
-        regex=r'^(?P<username>[\w.@+-]+)/$',
-        view=views.UserDetailView.as_view(),
+        regex=r'^(?P<pk>\d+)/$',
+        view=views.UserUpdateView.as_view(),
         name='detail'
     ),
     url(
@@ -24,7 +29,7 @@ urlpatterns = [
         name='update'
     ),
     url(
-        regex=r'^(?P<username>[\w.@+-]+)/delete$',
+        regex=r'^(?P<pk>\d+)/delete$',
         view=views.UserDeleteView.as_view(),
         name='delete'
     ),
