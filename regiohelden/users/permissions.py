@@ -6,3 +6,10 @@ class UserCreatedByAdminMixin(UserPassesTestMixin):
 
     def test_func(self):
         return self.request.user.can_modify(self.get_object())
+
+
+class UserHasGoogleAccountMixin(UserPassesTestMixin):
+    raise_exception = True
+
+    def test_func(self):
+        return self.request.user.has_google_account()

@@ -12,15 +12,11 @@ Anas Zahim test for RegioHelden
 
 
 * Make sure you have docker and docker-compose installed
-* `docker-compose up -d`
+* `docker-compose -f dev.yml up -d`
 * `docker-compose -f dev.yml run django python manage.py migrate`
-*  `docker-compose -f dev.yml run django python manage.py createsuperuser`
-* Please follow `these instructions`_.
+* `docker-compose -f dev.yml run django python manage.py createsuperuser`
+* Please follow `these instructions`_ for setting Google credentials in http://localhost:8000/admin/socialaccount/socialapp/add/
 * Visit http://localhost:8000
 
 .. _`these instructions`: http://django-allauth.readthedocs.io/en/latest/providers.html#google
-
-
-
-
 

@@ -11,7 +11,9 @@
       </div>
 
       <div class="col-md-1">
-        <a href="{% url "users:create" %}" class="btn btn-primary">Create</a>
+        {% if request.user.has_google_account %}
+          <a href="{% url "users:create" %}" class="btn btn-primary">Create</a>
+        {% endif %}
       </div>
   </div>
 
@@ -25,7 +27,7 @@
     {% for user in user_list %}
         <tr>
             <td>
-                {% if user.created_by == request.user and request.user.is_superuser %}
+                {% if user.created_by == request.user and request.user.has_google_account %}
                     <a href="{% url 'users:detail' user.pk %}">
                         {{ user.get_full_name }}
                     </a>
@@ -35,7 +37,7 @@
             </td>
             <td>{{ user.iban }}</td>
             <td>
-                {% if user.created_by == request.user and request.user.is_superuser %}
+                {% if user.created_by == request.user and request.user.has_google_account %}
                     <a href="{% url 'users:delete' user.pk %}">Remove</a>
                 {% endif %}
             </td>

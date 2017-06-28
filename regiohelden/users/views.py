@@ -4,11 +4,14 @@ from django.views.generic import DetailView, ListView, RedirectView, UpdateView,
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from regiohelden.users.permissions import UserCreatedByAdminMixin
+from regiohelden.users.permissions import UserCreatedByAdminMixin, UserHasGoogleAccountMixin
 from .models import User
 
 
-class UserCreateView(LoginRequiredMixin, FormValidMessageMixin, CreateView):
+class UserCreateView(LoginRequiredMixin,
+                     FormValidMessageMixin,
+                     UserHasGoogleAccountMixin,
+                     CreateView):
     model = User
     fields = ('username', 'first_name', 'last_name', 'iban')
     form_valid_message = "User successfully created"

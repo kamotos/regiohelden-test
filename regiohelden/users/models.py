@@ -28,4 +28,7 @@ class User(AbstractUser):
         :param user: User to be modified
         :rtype: bool
         """
-        return user.created_by == self or user == self
+        return self.has_google_account() and (user.created_by == self or user == self)
+
+    def has_google_account(self):
+        return self.socialaccount_set.filter(provider="google").exists()
